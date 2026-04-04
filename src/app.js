@@ -4,6 +4,7 @@
 const config = {
   numberCount: 5,   // 1–20
   mathDigits: 2,    // number of digits for math challenge (1–6)
+  mathMaxValue: 0,  // max value cap for math challenge (0 = no cap)
   timerMinutes: 3,  // 1–60
 };
 
@@ -38,7 +39,10 @@ function renderNumbers(nums) {
 function generateChallenge() {
   const digits = config.mathDigits;
   const min = Math.pow(10, digits - 1); // e.g. 10 for 2 digits
-  const max = Math.pow(10, digits) - 1;  // e.g. 99 for 2 digits
+  const digitMax = Math.pow(10, digits) - 1;  // e.g. 99 for 2 digits
+  const max = (config.mathMaxValue > 0 && config.mathMaxValue >= min)
+    ? Math.min(digitMax, config.mathMaxValue)
+    : digitMax;
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
@@ -131,10 +135,12 @@ function setTimerButtons(running) {
 function readConfig() {
   const count = parseInt(document.getElementById('cfg-number-count').value, 10);
   const digits = parseInt(document.getElementById('cfg-math-digits').value, 10);
+  const maxVal = parseInt(document.getElementById('cfg-math-max').value, 10);
   const minutes = parseInt(document.getElementById('cfg-timer-min').value, 10);
 
   config.numberCount = Math.min(20, Math.max(1, count || 5));
   config.mathDigits = Math.min(6, Math.max(1, digits || 2));
+  config.mathMaxValue = isNaN(maxVal) ? 0 : Math.max(0, maxVal);
   config.timerMinutes = Math.min(60, Math.max(1, minutes || 3));
 }
 
@@ -153,7 +159,7 @@ function refresh() {
 // ── Bootstrap ───────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Config
-  ['cfg-number-count', 'cfg-math-digits', 'cfg-timer-min'].forEach(id => {
+  ['cfg-number-count', 'cfg-math-digits', 'cfg-math-max', 'cfg-timer-min'].forEach(id => {
     document.getElementById(id).addEventListener('change', applyConfig);
   });
 
