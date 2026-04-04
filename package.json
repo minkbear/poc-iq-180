@@ -1,0 +1,17 @@
+{
+  "name": "mb-mvp",
+  "version": "0.1.0",
+  "description": "MB-MVP — Create MVP that exceeds expectations.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [],
+  "license": "UNLICENSED",
+  "private": true
+}
