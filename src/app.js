@@ -3,7 +3,7 @@
 // ── Configuration ──────────────────────────────────────────────────────────
 const config = {
   numberCount: 5,   // 1–20
-  mathMaxValue: 99, // max value for math operands
+  mathDigits: 2,    // number of digits for math challenge (1–6)
   timerMinutes: 3,  // 1–60
 };
 
@@ -35,40 +35,15 @@ function renderNumbers(nums) {
 }
 
 // ── Math Challenge ──────────────────────────────────────────────────────────
-const OPERATIONS = [
-  { symbol: '+', fn: (a, b) => a + b },
-  { symbol: '−', fn: (a, b) => a - b },
-  { symbol: '×', fn: (a, b) => a * b },
-];
-
-function generateProblem() {
-  const max = config.mathMaxValue;
-  const op = OPERATIONS[Math.floor(Math.random() * OPERATIONS.length)];
-  let a, b;
-
-  if (op.symbol === '−') {
-    // Ensure non-negative result: a >= b
-    a = Math.max(1, Math.floor(Math.random() * max) + 1);
-    b = Math.floor(Math.random() * a) + 1;
-  } else if (op.symbol === '×') {
-    // Keep product manageable
-    const cap = Math.ceil(Math.sqrt(max));
-    a = Math.floor(Math.random() * cap) + 1;
-    b = Math.floor(Math.random() * cap) + 1;
-  } else {
-    a = Math.floor(Math.random() * max) + 1;
-    b = Math.floor(Math.random() * max) + 1;
-  }
-
-  return { a, b, op, result: op.fn(a, b) };
+function generateChallenge() {
+  const digits = config.mathDigits;
+  const min = Math.pow(10, digits - 1); // e.g. 10 for 2 digits
+  const max = Math.pow(10, digits) - 1;  // e.g. 99 for 2 digits
+  return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-function renderProblem(problem) {
-  document.getElementById('math-problem').textContent =
-    `${problem.a}  ${problem.op.symbol}  ${problem.b}  =  ?`;
-  const answerEl = document.getElementById('math-answer');
-  answerEl.textContent = problem.result;
-  answerEl.style.visibility = 'hidden';
+function renderChallenge(number) {
+  document.getElementById('math-problem').textContent = number;
 }
 
 // ── Timer ───────────────────────────────────────────────────────────────────
@@ -155,11 +130,11 @@ function setTimerButtons(running) {
 // ── Config ──────────────────────────────────────────────────────────────────
 function readConfig() {
   const count = parseInt(document.getElementById('cfg-number-count').value, 10);
-  const mathMax = parseInt(document.getElementById('cfg-math-max').value, 10);
+  const digits = parseInt(document.getElementById('cfg-math-digits').value, 10);
   const minutes = parseInt(document.getElementById('cfg-timer-min').value, 10);
 
   config.numberCount = Math.min(20, Math.max(1, count || 5));
-  config.mathMaxValue = Math.max(2, mathMax || 99);
+  config.mathDigits = Math.min(6, Math.max(1, digits || 2));
   config.timerMinutes = Math.min(60, Math.max(1, minutes || 3));
 }
 
@@ -172,20 +147,20 @@ function applyConfig() {
 // ── Refresh ─────────────────────────────────────────────────────────────────
 function refresh() {
   renderNumbers(generateNumbers());
-  renderProblem(generateProblem());
+  renderChallenge(generateChallenge());
 }
 
 // ── Bootstrap ───────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Config
-  ['cfg-number-count', 'cfg-math-max', 'cfg-timer-min'].forEach(id => {
+  ['cfg-number-count', 'cfg-math-digits', 'cfg-timer-min'].forEach(id => {
     document.getElementById(id).addEventListener('change', applyConfig);
   });
 
   // Game buttons
   document.getElementById('btn-refresh').addEventListener('click', refresh);
-  document.getElementById('btn-show-answer').addEventListener('click', () => {
-    document.getElementById('math-answer').style.visibility = 'visible';
+  document.getElementById('btn-new-challenge').addEventListener('click', () => {
+    renderChallenge(generateChallenge());
   });
 
   // Timer buttons

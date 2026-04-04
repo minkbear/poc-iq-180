@@ -19,8 +19,8 @@
           <input type="number" id="cfg-number-count" value="5" min="1" max="20">
         </div>
         <div class="config-item">
-          <label for="cfg-math-max">Math Max Value</label>
-          <input type="number" id="cfg-math-max" value="99" min="2" max="999">
+          <label for="cfg-math-digits">Math Digits (1–6)</label>
+          <input type="number" id="cfg-math-digits" value="2" min="1" max="6">
         </div>
         <div class="config-item">
           <label for="cfg-timer-min">Timer Minutes (1–60)</label>
@@ -38,13 +38,12 @@
       </div>
     </div>
 
-    <!-- Math Problem -->
+    <!-- Math Challenge -->
     <div class="card">
       <h2>Math Challenge</h2>
       <div id="math-problem"></div>
-      <div id="math-answer"></div>
       <div class="btn-row">
-        <button class="btn btn-info" id="btn-show-answer">Show Answer</button>
+        <button class="btn btn-primary" id="btn-new-challenge">New Number</button>
       </div>
     </div>
 
