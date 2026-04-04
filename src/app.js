@@ -164,8 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Game buttons
-  document.getElementById('btn-refresh').addEventListener('click', refresh);
+  document.getElementById('btn-refresh').addEventListener('click', () => {
+    readConfig();
+    refresh();
+  });
   document.getElementById('btn-new-challenge').addEventListener('click', () => {
+    readConfig();
     renderChallenge(generateChallenge());
   });
 
