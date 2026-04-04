@@ -1,0 +1,201 @@
+'use strict';
+
+// ── Configuration ──────────────────────────────────────────────────────────
+const config = {
+  numberCount: 5,   // 1–20
+  mathMaxValue: 99, // max value for math operands
+  timerMinutes: 3,  // 1–60
+};
+
+// ── Colours for number cards ────────────────────────────────────────────────
+const CARD_COLORS = [
+  '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF',
+  '#C77DFF', '#FF9A3C', '#00C9A7', '#F72585',
+];
+
+// ── Random Numbers ──────────────────────────────────────────────────────────
+function generateNumbers() {
+  const nums = [];
+  for (let i = 0; i < config.numberCount; i++) {
+    nums.push(Math.floor(Math.random() * 10)); // 0–9
+  }
+  return nums;
+}
+
+function renderNumbers(nums) {
+  const container = document.getElementById('numbers-display');
+  container.innerHTML = '';
+  nums.forEach((n, i) => {
+    const card = document.createElement('div');
+    card.className = 'number-card';
+    card.textContent = n;
+    card.style.backgroundColor = CARD_COLORS[i % CARD_COLORS.length];
+    container.appendChild(card);
+  });
+}
+
+// ── Math Challenge ──────────────────────────────────────────────────────────
+const OPERATIONS = [
+  { symbol: '+', fn: (a, b) => a + b },
+  { symbol: '−', fn: (a, b) => a - b },
+  { symbol: '×', fn: (a, b) => a * b },
+];
+
+function generateProblem() {
+  const max = config.mathMaxValue;
+  const op = OPERATIONS[Math.floor(Math.random() * OPERATIONS.length)];
+  let a, b;
+
+  if (op.symbol === '−') {
+    // Ensure non-negative result: a >= b
+    a = Math.max(1, Math.floor(Math.random() * max) + 1);
+    b = Math.floor(Math.random() * a) + 1;
+  } else if (op.symbol === '×') {
+    // Keep product manageable
+    const cap = Math.ceil(Math.sqrt(max));
+    a = Math.floor(Math.random() * cap) + 1;
+    b = Math.floor(Math.random() * cap) + 1;
+  } else {
+    a = Math.floor(Math.random() * max) + 1;
+    b = Math.floor(Math.random() * max) + 1;
+  }
+
+  return { a, b, op, result: op.fn(a, b) };
+}
+
+function renderProblem(problem) {
+  document.getElementById('math-problem').textContent =
+    `${problem.a}  ${problem.op.symbol}  ${problem.b}  =  ?`;
+  const answerEl = document.getElementById('math-answer');
+  answerEl.textContent = problem.result;
+  answerEl.style.visibility = 'hidden';
+}
+
+// ── Timer ───────────────────────────────────────────────────────────────────
+let timerInterval = null;
+let timerRemaining = 0;
+let timerRunning = false;
+
+function formatTime(secs) {
+  const m = Math.floor(secs / 60).toString().padStart(2, '0');
+  const s = (secs % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+function updateTimerDisplay() {
+  document.getElementById('timer-display').textContent = formatTime(timerRemaining);
+}
+
+function playExpiry() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.28;
+      gain.gain.setValueAtTime(0.5, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.start(t);
+      osc.stop(t + 0.26);
+    });
+  } catch (_) {
+    // AudioContext unavailable — silent fallback
+  }
+}
+
+function startTimer() {
+  if (timerRunning) return;
+  if (timerRemaining <= 0) {
+    timerRemaining = config.timerMinutes * 60;
+    updateTimerDisplay();
+    document.getElementById('timer-display').classList.remove('timer-expired');
+  }
+  timerRunning = true;
+  setTimerButtons(true);
+
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    updateTimerDisplay();
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      setTimerButtons(false);
+      document.getElementById('timer-display').classList.add('timer-expired');
+      playExpiry();
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (!timerRunning) return;
+  clearInterval(timerInterval);
+  timerRunning = false;
+  setTimerButtons(false);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = config.timerMinutes * 60;
+  updateTimerDisplay();
+  setTimerButtons(false);
+  document.getElementById('timer-display').classList.remove('timer-expired');
+}
+
+function setTimerButtons(running) {
+  document.getElementById('btn-start').disabled = running;
+  document.getElementById('btn-pause').disabled = !running;
+}
+
+// ── Config ──────────────────────────────────────────────────────────────────
+function readConfig() {
+  const count = parseInt(document.getElementById('cfg-number-count').value, 10);
+  const mathMax = parseInt(document.getElementById('cfg-math-max').value, 10);
+  const minutes = parseInt(document.getElementById('cfg-timer-min').value, 10);
+
+  config.numberCount = Math.min(20, Math.max(1, count || 5));
+  config.mathMaxValue = Math.max(2, mathMax || 99);
+  config.timerMinutes = Math.min(60, Math.max(1, minutes || 3));
+}
+
+function applyConfig() {
+  readConfig();
+  refresh();
+  resetTimer();
+}
+
+// ── Refresh ─────────────────────────────────────────────────────────────────
+function refresh() {
+  renderNumbers(generateNumbers());
+  renderProblem(generateProblem());
+}
+
+// ── Bootstrap ───────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Config
+  ['cfg-number-count', 'cfg-math-max', 'cfg-timer-min'].forEach(id => {
+    document.getElementById(id).addEventListener('change', applyConfig);
+  });
+
+  // Game buttons
+  document.getElementById('btn-refresh').addEventListener('click', refresh);
+  document.getElementById('btn-show-answer').addEventListener('click', () => {
+    document.getElementById('math-answer').style.visibility = 'visible';
+  });
+
+  // Timer buttons
+  document.getElementById('btn-start').addEventListener('click', startTimer);
+  document.getElementById('btn-pause').addEventListener('click', pauseTimer);
+  document.getElementById('btn-reset').addEventListener('click', resetTimer);
+
+  // Initial render
+  timerRemaining = config.timerMinutes * 60;
+  updateTimerDisplay();
+  setTimerButtons(false);
+  refresh();
+});

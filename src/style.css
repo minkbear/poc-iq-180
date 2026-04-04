@@ -1,0 +1,198 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', cursive, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  font-size: 2.8rem;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.card h2 {
+  font-size: 1.4rem;
+  color: #5a4fcf;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #ede9ff;
+}
+
+/* Config panel */
+.config-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.config-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.config-item label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.config-item input[type="number"] {
+  width: 110px;
+  padding: 8px 12px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  text-align: center;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.config-item input[type="number"]:focus {
+  outline: none;
+  border-color: #5a4fcf;
+}
+
+/* Number cards */
+#numbers-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.number-card {
+  width: 88px;
+  height: 88px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+  user-select: none;
+}
+
+.number-card:hover {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+/* Math challenge */
+#math-problem {
+  font-size: 3rem;
+  text-align: center;
+  color: #333;
+  margin: 12px 0;
+  letter-spacing: 2px;
+}
+
+#math-answer {
+  font-size: 2.6rem;
+  text-align: center;
+  color: #4caf50;
+  font-weight: bold;
+  margin-top: 12px;
+  min-height: 3rem;
+}
+
+/* Timer */
+#timer-display {
+  font-size: 5.5rem;
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+  letter-spacing: 6px;
+  margin: 12px 0 20px;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s;
+}
+
+#timer-display.timer-expired {
+  color: #f44336;
+  animation: pulse 0.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 26px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary { background: #5a4fcf; color: white; }
+.btn-success { background: #43a047; color: white; }
+.btn-warning { background: #fb8c00; color: white; }
+.btn-danger  { background: #e53935; color: white; }
+.btn-info    { background: #1e88e5; color: white; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  h1 { font-size: 2rem; }
+  #timer-display { font-size: 4rem; }
+  #math-problem { font-size: 2.2rem; }
+  .number-card { width: 72px; height: 72px; font-size: 2.6rem; }
+}
