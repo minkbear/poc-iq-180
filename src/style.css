@@ -5,8 +5,8 @@
 }
 
 body {
-  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', cursive, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Nunito', 'Arial Rounded MT Bold', sans-serif;
+  background: linear-gradient(135deg, #f8e73a 0%, #ff6b35 100%);
   min-height: 100vh;
   padding: 20px;
 }
@@ -15,6 +15,7 @@ h1 {
   text-align: center;
   color: white;
   font-size: 2.8rem;
+  font-weight: 800;
   text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
   margin-bottom: 24px;
   letter-spacing: 1px;
@@ -36,10 +37,36 @@ h1 {
 
 .card h2 {
   font-size: 1.4rem;
-  color: #5a4fcf;
+  color: #5c6bc0;
   margin-bottom: 18px;
   padding-bottom: 10px;
   border-bottom: 3px solid #ede9ff;
+}
+
+/* Settings details/summary */
+.settings-card {
+  cursor: pointer;
+}
+
+.settings-card summary {
+  font-size: 0.85rem;
+  color: #999;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+
+.settings-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.settings-card[open] summary {
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
 }
 
 /* Config panel */
@@ -76,7 +103,7 @@ h1 {
 
 .config-item input[type="number"]:focus {
   outline: none;
-  border-color: #5a4fcf;
+  border-color: #5c6bc0;
 }
 
 /* Number cards */
@@ -89,8 +116,8 @@ h1 {
 }
 
 .number-card {
-  width: 88px;
-  height: 88px;
+  width: 100px;
+  height: 100px;
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -103,6 +130,12 @@ h1 {
   transition: transform 0.15s ease;
   user-select: none;
 }
+
+.number-card:nth-child(5n+1) { background: #ff7043; }
+.number-card:nth-child(5n+2) { background: #26c6da; }
+.number-card:nth-child(5n+3) { background: #aed581; color: #333; text-shadow: none; }
+.number-card:nth-child(5n+4) { background: #ffa726; }
+.number-card:nth-child(5n+5) { background: #7c4dff; }
 
 .number-card:hover {
   transform: scale(1.08) rotate(-2deg);
@@ -119,14 +152,19 @@ h1 {
 
 /* Timer */
 #timer-display {
-  font-size: 5.5rem;
+  font-size: 6.5rem;
   text-align: center;
   font-weight: bold;
   color: #333;
   letter-spacing: 6px;
-  margin: 12px 0 20px;
+  margin: 12px auto 20px;
   font-variant-numeric: tabular-nums;
   transition: color 0.3s;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 10px 30px;
+  display: inline-block;
+  width: 100%;
 }
 
 #timer-display.timer-expired {
@@ -174,7 +212,7 @@ h1 {
   cursor: not-allowed;
 }
 
-.btn-primary { background: #5a4fcf; color: white; }
+.btn-primary { background: #5c6bc0; color: white; }
 .btn-success { background: #43a047; color: white; }
 .btn-warning { background: #fb8c00; color: white; }
 .btn-danger  { background: #e53935; color: white; }
@@ -183,7 +221,7 @@ h1 {
 /* Responsive */
 @media (max-width: 480px) {
   h1 { font-size: 2rem; }
-  #timer-display { font-size: 4rem; }
+  #timer-display { font-size: 4rem; padding: 8px 20px; }
   #math-problem { font-size: 2.2rem; }
   .number-card { width: 72px; height: 72px; font-size: 2.6rem; }
 }
