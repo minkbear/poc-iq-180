@@ -10,6 +10,8 @@ export default [
         AudioContext: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
         parseInt: 'readonly',
         Math: 'readonly',
         console: 'readonly',
