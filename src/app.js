@@ -157,6 +157,13 @@ function startTimer() {
       el.classList.remove('timer-warning');
       el.classList.add('timer-expired');
       playExpiry();
+      // Auto-regenerate: brief pause so expiry state registers, then spin new content
+      setTimeout(() => {
+        resetTimer();
+        if (!isSpinning) {
+          spinAndReveal(generateNumbers(), generateChallenge());
+        }
+      }, 500);
     }
   }, 1000);
 }
