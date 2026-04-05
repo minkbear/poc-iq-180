@@ -188,6 +188,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-pause').addEventListener('click', pauseTimer);
   document.getElementById('btn-reset').addEventListener('click', resetTimer);
 
+  // Settings bottom-sheet backdrop (mobile/tablet)
+  const settingsDetails = document.getElementById('settings-details');
+  const settingsBackdrop = document.getElementById('settings-backdrop');
+  if (settingsDetails && settingsBackdrop) {
+    settingsDetails.addEventListener('toggle', () => {
+      settingsBackdrop.classList.toggle('active', settingsDetails.open);
+    });
+    settingsBackdrop.addEventListener('click', () => {
+      settingsDetails.open = false;
+      settingsBackdrop.classList.remove('active');
+    });
+  }
+
   // Initial render
   timerRemaining = config.timerMinutes * 60;
   updateTimerDisplay();

@@ -43,7 +43,7 @@
     </div>
 
     <!-- Settings -->
-    <details class="card settings-card">
+    <details class="card settings-card" id="settings-details">
       <summary>⚙️ Settings</summary>
       <div class="config-panel">
         <div class="config-item">
@@ -65,6 +65,9 @@
       </div>
     </details>
   </div>
+
+  <!-- Backdrop overlay for settings bottom sheet on mobile -->
+  <div class="settings-backdrop" id="settings-backdrop"></div>
 
   <script src="src/app.js?v=CACHE_BUST"></script>
 </body>

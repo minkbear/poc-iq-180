@@ -228,10 +228,83 @@ h1 {
 .btn-danger  { background: #e53935; color: white; }
 .btn-info    { background: #1e88e5; color: white; }
 
-/* Responsive */
+/* Settings backdrop (mobile only) */
+.settings-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 99;
+}
+.settings-backdrop.active {
+  display: block;
+}
+
+/* ── Responsive: Tablet (≤768px) ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  body { padding: 14px; }
+  h1 { font-size: 2.2rem; margin-bottom: 16px; }
+  .container { max-width: 100%; }
+  .card { padding: 18px; margin-bottom: 14px; }
+  .card h2 { font-size: 1.2rem; margin-bottom: 12px; }
+  #timer-display { font-size: 5rem; letter-spacing: 4px; padding: 8px 20px; }
+  #math-problem { font-size: 2.6rem; }
+  .number-card { width: 80px; height: 80px; font-size: 2.8rem; border-radius: 14px; }
+  #numbers-display { gap: 10px; }
+  .btn { padding: 10px 20px; font-size: 0.95rem; }
+
+  /* Settings becomes a floating button + modal on tablet/mobile */
+  .settings-card {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    max-height: 70vh;
+    overflow-y: auto;
+    transform: translateY(calc(100% - 44px));
+    transition: transform 0.3s ease;
+  }
+  .settings-card[open] {
+    transform: translateY(0);
+  }
+  .settings-card summary {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 12px 0;
+    z-index: 1;
+  }
+  .config-panel { gap: 16px; }
+
+  /* Add bottom padding to container so settings tab doesn't overlap content */
+  .container { padding-bottom: 60px; }
+}
+
+/* ── Responsive: Mobile (≤480px) ──────────────────────────────────────────── */
 @media (max-width: 480px) {
-  h1 { font-size: 2rem; }
-  #timer-display { font-size: 4rem; padding: 8px 20px; }
-  #math-problem { font-size: 2.2rem; }
-  .number-card { width: 72px; height: 72px; font-size: 2.6rem; }
+  body { padding: 10px; }
+  h1 { font-size: 1.7rem; margin-bottom: 12px; }
+  .card { padding: 14px; margin-bottom: 10px; border-radius: 16px; }
+  .card h2 { font-size: 1.05rem; margin-bottom: 10px; padding-bottom: 8px; }
+  #timer-display { font-size: 3.5rem; letter-spacing: 3px; padding: 6px 14px; border-radius: 14px; }
+  #math-problem { font-size: 2rem; margin: 8px 0; }
+  .number-card { width: 60px; height: 60px; font-size: 2.2rem; border-radius: 12px; }
+  #numbers-display { gap: 8px; margin-bottom: 12px; }
+  .btn { padding: 10px 16px; font-size: 0.9rem; border-radius: 10px; }
+  .btn-row { gap: 8px; }
+  .config-item input[type="number"] { width: 90px; padding: 6px 10px; font-size: 1rem; }
+  .config-item label { font-size: 0.75rem; }
+}
+
+/* ── Responsive: Small mobile (≤360px) ────────────────────────────────────── */
+@media (max-width: 360px) {
+  h1 { font-size: 1.4rem; }
+  #timer-display { font-size: 2.8rem; letter-spacing: 2px; }
+  .number-card { width: 50px; height: 50px; font-size: 1.8rem; }
+  #math-problem { font-size: 1.7rem; }
+  .btn { padding: 8px 12px; font-size: 0.85rem; }
 }
