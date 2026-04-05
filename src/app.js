@@ -48,23 +48,11 @@ function generateOperand() {
 }
 
 function generateChallenge() {
-  const ops = [];
-  if (config.mathOps.add) ops.push('+');
-  if (config.mathOps.sub) ops.push('−');
-  if (config.mathOps.mul) ops.push('×');
-  const op = ops[Math.floor(Math.random() * ops.length)];
-
-  let a = generateOperand();
-  let b = generateOperand();
-
-  // Subtraction: ensure non-negative result
-  if (op === '−' && a < b) { const tmp = a; a = b; b = tmp; }
-
-  return { a, op, b };
+  return generateOperand();
 }
 
-function renderChallenge({ a, op, b }) {
-  document.getElementById('math-problem').textContent = `${a} ${op} ${b} = ?`;
+function renderChallenge(value) {
+  document.getElementById('math-problem').textContent = String(value);
 }
 
 // ── Sound / Mute ────────────────────────────────────────────────────────────
@@ -315,11 +303,10 @@ function spinAndReveal(nums, challenge) {
 
   // Challenge number lands ~100ms after the last card
   const challengeDelay = (cards.length - 1) * CARD_STAGGER_MS + 100;
-  const challengeText = `${challenge.a} ${challenge.op} ${challenge.b} = ?`;
   spinElement(
     challengeEl,
     () => String(generateOperand()),
-    challengeText,
+    String(challenge),
     challengeDelay,
     onOneDone
   );
@@ -334,11 +321,10 @@ function spinChallengeOnly(challenge) {
   setGameButtonsDisabled(true);
 
   const challengeEl = document.getElementById('math-problem');
-  const challengeText = `${challenge.a} ${challenge.op} ${challenge.b} = ?`;
   spinElement(
     challengeEl,
     () => String(generateOperand()),
-    challengeText,
+    String(challenge),
     0,
     () => setGameButtonsDisabled(false)
   );
