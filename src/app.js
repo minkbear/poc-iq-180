@@ -285,11 +285,7 @@ function spinAndReveal(nums, challenge) {
   const challengeText = `${challenge.a} ${challenge.op} ${challenge.b} = ?`;
   spinElement(
     challengeEl,
-    () => {
-      const fakeA = generateOperand();
-      const fakeB = generateOperand();
-      return `${fakeA} + ${fakeB} = ?`;
-    },
+    () => String(generateOperand()),
     challengeText,
     challengeDelay,
     onOneDone
@@ -308,11 +304,7 @@ function spinChallengeOnly(challenge) {
   const challengeText = `${challenge.a} ${challenge.op} ${challenge.b} = ?`;
   spinElement(
     challengeEl,
-    () => {
-      const fakeA = generateOperand();
-      const fakeB = generateOperand();
-      return `${fakeA} + ${fakeB} = ?`;
-    },
+    () => String(generateOperand()),
     challengeText,
     0,
     () => setGameButtonsDisabled(false)
