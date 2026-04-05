@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="src/style.css?v=CACHE_BUST">
+  <link rel="stylesheet" href="src/style.css?v=MBM27">
 </head>
 <body>
   <div class="container">
@@ -62,6 +62,23 @@
           <label for="cfg-timer-min">Timer Minutes (1–60)</label>
           <input type="number" id="cfg-timer-min" value="3" min="1" max="60">
         </div>
+        <div class="config-item">
+          <label>Math Operations</label>
+          <div class="ops-selector">
+            <label class="op-toggle">
+              <input type="checkbox" id="cfg-op-add" checked>
+              <span>+</span>
+            </label>
+            <label class="op-toggle">
+              <input type="checkbox" id="cfg-op-sub" checked>
+              <span>−</span>
+            </label>
+            <label class="op-toggle">
+              <input type="checkbox" id="cfg-op-mul" checked>
+              <span>×</span>
+            </label>
+          </div>
+        </div>
       </div>
     </details>
   </div>
@@ -69,6 +86,6 @@
   <!-- Backdrop overlay for settings bottom sheet on mobile -->
   <div class="settings-backdrop" id="settings-backdrop"></div>
 
-  <script src="src/app.js?v=CACHE_BUST"></script>
+  <script src="src/app.js?v=MBM27"></script>
 </body>
 </html>

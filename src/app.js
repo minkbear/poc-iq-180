@@ -6,6 +6,7 @@ const config = {
   mathDigits: 2,    // number of digits for math challenge (1–6)
   mathMaxValue: 0,  // max value cap for math challenge (0 = no cap)
   timerMinutes: 3,  // 1–60
+  mathOps: { add: true, sub: true, mul: true },
 };
 
 // ── Colours for number cards ────────────────────────────────────────────────
@@ -36,7 +37,7 @@ function renderNumbers(nums) {
 }
 
 // ── Math Challenge ──────────────────────────────────────────────────────────
-function generateChallenge() {
+function generateOperand() {
   const digits = config.mathDigits;
   const min = Math.pow(10, digits - 1); // e.g. 10 for 2 digits
   const digitMax = Math.pow(10, digits) - 1;  // e.g. 99 for 2 digits
@@ -46,8 +47,24 @@ function generateChallenge() {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-function renderChallenge(number) {
-  document.getElementById('math-problem').textContent = number;
+function generateChallenge() {
+  const ops = [];
+  if (config.mathOps.add) ops.push('+');
+  if (config.mathOps.sub) ops.push('−');
+  if (config.mathOps.mul) ops.push('×');
+  const op = ops[Math.floor(Math.random() * ops.length)];
+
+  let a = generateOperand();
+  let b = generateOperand();
+
+  // Subtraction: ensure non-negative result
+  if (op === '−' && a < b) { const tmp = a; a = b; b = tmp; }
+
+  return { a, op, b };
+}
+
+function renderChallenge({ a, op, b }) {
+  document.getElementById('math-problem').textContent = `${a} ${op} ${b} = ?`;
 }
 
 // ── Timer ───────────────────────────────────────────────────────────────────
@@ -152,12 +169,24 @@ function readConfig() {
   config.mathDigits = Math.min(6, Math.max(1, digits || 2));
   config.mathMaxValue = isNaN(maxVal) ? 0 : Math.max(0, maxVal);
   config.timerMinutes = Math.min(60, Math.max(1, minutes || 3));
+
+  const add = document.getElementById('cfg-op-add').checked;
+  const sub = document.getElementById('cfg-op-sub').checked;
+  const mul = document.getElementById('cfg-op-mul').checked;
+  // At least one must remain selected
+  if (!add && !sub && !mul) {
+    document.getElementById('cfg-op-add').checked = true;
+    config.mathOps = { add: true, sub: false, mul: false };
+  } else {
+    config.mathOps = { add, sub, mul };
+  }
 }
 
 function applyConfig() {
   readConfig();
-  refresh();
   resetTimer();
+  if (isSpinning) return;
+  spinAndReveal(generateNumbers(), generateChallenge());
 }
 
 // ── Refresh ─────────────────────────────────────────────────────────────────
@@ -166,21 +195,148 @@ function refresh() {
   renderChallenge(generateChallenge());
 }
 
+// ── Spin Animation ──────────────────────────────────────────────────────────
+const SPIN_FAST_MS = 80;
+const SPIN_SLOW_MS = 200;
+const SPIN_FAST_DURATION = 1800;
+const SPIN_SLOW_TICKS = 4;
+const CARD_STAGGER_MS = 60;
+
+let isSpinning = false;
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function setGameButtonsDisabled(disabled) {
+  isSpinning = disabled;
+  document.getElementById('btn-refresh').disabled = disabled;
+  document.getElementById('btn-new-challenge').disabled = disabled;
+}
+
+// Spin a single DOM element through random values then settle on finalValue.
+// randomFn: () => string — returns a random display value during spin
+// finalValue: string — value to show at the end
+// offsetMs: start delay in ms
+// onDone: called when this element's animation is complete
+function spinElement(el, randomFn, finalValue, offsetMs, onDone) {
+  setTimeout(() => {
+    el.classList.add('spinning');
+
+    const fastInterval = setInterval(() => {
+      el.textContent = randomFn();
+    }, SPIN_FAST_MS);
+
+    setTimeout(() => {
+      clearInterval(fastInterval);
+      let slowTicks = 0;
+      const slowInterval = setInterval(() => {
+        el.textContent = randomFn();
+        slowTicks++;
+        if (slowTicks >= SPIN_SLOW_TICKS) {
+          clearInterval(slowInterval);
+          el.textContent = finalValue;
+          el.classList.remove('spinning');
+          if (onDone) onDone();
+        }
+      }, SPIN_SLOW_MS);
+    }, SPIN_FAST_DURATION);
+  }, offsetMs);
+}
+
+function spinAndReveal(nums, challenge) {
+  if (prefersReducedMotion()) {
+    renderNumbers(nums);
+    renderChallenge(challenge);
+    return;
+  }
+
+  setGameButtonsDisabled(true);
+
+  // Render cards with placeholder values so elements exist in the DOM
+  renderNumbers(nums.map(() => Math.floor(Math.random() * 10)));
+
+  const container = document.getElementById('numbers-display');
+  const cards = Array.from(container.querySelectorAll('.number-card'));
+  const challengeEl = document.getElementById('math-problem');
+
+  let doneCount = 0;
+  const total = cards.length + 1; // cards + challenge number
+
+  function onOneDone() {
+    doneCount++;
+    if (doneCount >= total) {
+      setGameButtonsDisabled(false);
+    }
+  }
+
+  cards.forEach((card, i) => {
+    spinElement(
+      card,
+      () => String(Math.floor(Math.random() * 10)),
+      String(nums[i]),
+      i * CARD_STAGGER_MS,
+      onOneDone
+    );
+  });
+
+  // Challenge number lands ~100ms after the last card
+  const challengeDelay = (cards.length - 1) * CARD_STAGGER_MS + 100;
+  const challengeText = `${challenge.a} ${challenge.op} ${challenge.b} = ?`;
+  spinElement(
+    challengeEl,
+    () => {
+      const fakeA = generateOperand();
+      const fakeB = generateOperand();
+      return `${fakeA} + ${fakeB} = ?`;
+    },
+    challengeText,
+    challengeDelay,
+    onOneDone
+  );
+}
+
+function spinChallengeOnly(challenge) {
+  if (prefersReducedMotion()) {
+    renderChallenge(challenge);
+    return;
+  }
+
+  setGameButtonsDisabled(true);
+
+  const challengeEl = document.getElementById('math-problem');
+  const challengeText = `${challenge.a} ${challenge.op} ${challenge.b} = ?`;
+  spinElement(
+    challengeEl,
+    () => {
+      const fakeA = generateOperand();
+      const fakeB = generateOperand();
+      return `${fakeA} + ${fakeB} = ?`;
+    },
+    challengeText,
+    0,
+    () => setGameButtonsDisabled(false)
+  );
+}
+
 // ── Bootstrap ───────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   // Config
   ['cfg-number-count', 'cfg-math-digits', 'cfg-math-max', 'cfg-timer-min'].forEach(id => {
     document.getElementById(id).addEventListener('change', applyConfig);
   });
+  ['cfg-op-add', 'cfg-op-sub', 'cfg-op-mul'].forEach(id => {
+    document.getElementById(id).addEventListener('change', applyConfig);
+  });
 
   // Game buttons
   document.getElementById('btn-refresh').addEventListener('click', () => {
     readConfig();
-    refresh();
+    spinAndReveal(generateNumbers(), generateChallenge());
   });
   document.getElementById('btn-new-challenge').addEventListener('click', () => {
     readConfig();
-    renderChallenge(generateChallenge());
+    spinChallengeOnly(generateChallenge());
   });
 
   // Timer buttons

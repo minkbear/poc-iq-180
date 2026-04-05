@@ -106,6 +106,46 @@ h1 {
   border-color: #5c6bc0;
 }
 
+/* Operation selector */
+.ops-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.op-toggle {
+  cursor: pointer;
+}
+
+.op-toggle input[type="checkbox"] {
+  display: none;
+}
+
+.op-toggle span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #aaa;
+  background: #f5f5f5;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  user-select: none;
+}
+
+.op-toggle input[type="checkbox"]:checked + span {
+  background: #5c6bc0;
+  border-color: #5c6bc0;
+  color: white;
+}
+
+.op-toggle:hover span {
+  border-color: #5c6bc0;
+}
+
 /* Number cards */
 #numbers-display {
   display: flex;
@@ -185,6 +225,36 @@ h1 {
 @keyframes pulse-expired {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.08); }
+}
+
+/* Spin animation */
+.number-card.spinning {
+  animation: spin-card 0.16s ease-in-out infinite;
+  filter: saturate(0.5);
+}
+
+@keyframes spin-card {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+#math-problem.spinning {
+  animation: spin-challenge 0.18s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes spin-challenge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .number-card.spinning,
+  #math-problem.spinning {
+    animation: none;
+    filter: none;
+    opacity: 1;
+  }
 }
 
 /* Buttons */
