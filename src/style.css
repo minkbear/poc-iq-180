@@ -45,7 +45,7 @@ h1 {
 
 /* Settings details/summary */
 .settings-card {
-  cursor: pointer;
+  cursor: default;
 }
 
 .settings-card summary {
@@ -203,6 +203,8 @@ h1 {
   font-family: inherit;
   font-weight: bold;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.2s;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
@@ -240,8 +242,8 @@ h1 {
   display: block;
 }
 
-/* ── Responsive: Tablet (≤768px) ──────────────────────────────────────────── */
-@media (max-width: 768px) {
+/* ── Responsive: Tablet (≤834px — covers iPad Air 820px, iPad Pro 11" 834px) */
+@media (max-width: 834px) {
   body { padding: 14px; }
   h1 { font-size: 2.2rem; margin-bottom: 16px; }
   .container { max-width: 100%; }
@@ -251,9 +253,9 @@ h1 {
   #math-problem { font-size: 2.6rem; }
   .number-card { width: 80px; height: 80px; font-size: 2.8rem; border-radius: 14px; }
   #numbers-display { gap: 10px; }
-  .btn { padding: 10px 20px; font-size: 0.95rem; }
+  .btn { padding: 12px 22px; font-size: 0.95rem; min-height: 44px; touch-action: manipulation; }
 
-  /* Settings becomes a floating button + modal on tablet/mobile */
+  /* Settings becomes a bottom-sheet on tablet/mobile */
   .settings-card {
     position: fixed;
     bottom: 0;
@@ -264,12 +266,13 @@ h1 {
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
     z-index: 100;
     max-height: 70vh;
-    overflow-y: auto;
-    transform: translateY(calc(100% - 44px));
-    transition: transform 0.3s ease;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    max-height: 44px;
   }
   .settings-card[open] {
-    transform: translateY(0);
+    max-height: 70vh;
+    overflow-y: auto;
   }
   .settings-card summary {
     position: sticky;
