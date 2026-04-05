@@ -167,14 +167,24 @@ h1 {
   width: 100%;
 }
 
-#timer-display.timer-expired {
+#timer-display.timer-warning {
   color: #f44336;
-  animation: pulse 0.6s ease-in-out infinite;
+  animation: pulse-warning 0.8s ease-in-out infinite;
 }
 
-@keyframes pulse {
+#timer-display.timer-expired {
+  color: #b71c1c;
+  animation: pulse-expired 0.4s ease-in-out infinite;
+}
+
+@keyframes pulse-warning {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes pulse-expired {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
 
 /* Buttons */

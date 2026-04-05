@@ -62,7 +62,13 @@ function formatTime(secs) {
 }
 
 function updateTimerDisplay() {
-  document.getElementById('timer-display').textContent = formatTime(timerRemaining);
+  const el = document.getElementById('timer-display');
+  el.textContent = formatTime(timerRemaining);
+  if (timerRemaining > 0 && timerRemaining <= 30) {
+    el.classList.add('timer-warning');
+  } else {
+    el.classList.remove('timer-warning');
+  }
 }
 
 function playExpiry() {
@@ -92,7 +98,7 @@ function startTimer() {
   if (timerRemaining <= 0) {
     timerRemaining = config.timerMinutes * 60;
     updateTimerDisplay();
-    document.getElementById('timer-display').classList.remove('timer-expired');
+    document.getElementById('timer-display').classList.remove('timer-expired', 'timer-warning');
   }
   timerRunning = true;
   setTimerButtons(true);
@@ -104,7 +110,9 @@ function startTimer() {
       clearInterval(timerInterval);
       timerRunning = false;
       setTimerButtons(false);
-      document.getElementById('timer-display').classList.add('timer-expired');
+      const el = document.getElementById('timer-display');
+      el.classList.remove('timer-warning');
+      el.classList.add('timer-expired');
       playExpiry();
     }
   }, 1000);
@@ -123,7 +131,9 @@ function resetTimer() {
   timerRemaining = config.timerMinutes * 60;
   updateTimerDisplay();
   setTimerButtons(false);
-  document.getElementById('timer-display').classList.remove('timer-expired');
+  const timerEl = document.getElementById('timer-display');
+  timerEl.classList.remove('timer-warning');
+  timerEl.classList.remove('timer-expired');
 }
 
 function setTimerButtons(running) {
