@@ -67,6 +67,31 @@ function renderChallenge({ a, op, b }) {
   document.getElementById('math-problem').textContent = `${a} ${op} ${b} = ?`;
 }
 
+// ── Sound / Mute ────────────────────────────────────────────────────────────
+let isMuted = localStorage.getItem('mathgame-muted') === 'true';
+
+function updateMuteButton() {
+  const btn = document.getElementById('btn-mute');
+  if (!btn) return;
+  if (isMuted) {
+    btn.textContent = '🔇';
+    btn.setAttribute('aria-label', 'Unmute sound');
+    btn.setAttribute('title', 'Unmute sound');
+    btn.classList.add('muted');
+  } else {
+    btn.textContent = '🔊';
+    btn.setAttribute('aria-label', 'Mute sound');
+    btn.setAttribute('title', 'Mute sound');
+    btn.classList.remove('muted');
+  }
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  localStorage.setItem('mathgame-muted', isMuted);
+  updateMuteButton();
+}
+
 // ── Timer ───────────────────────────────────────────────────────────────────
 let timerInterval = null;
 let timerRemaining = 0;
@@ -89,6 +114,7 @@ function updateTimerDisplay() {
 }
 
 function playExpiry() {
+  if (isMuted) return;
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
@@ -348,6 +374,13 @@ document.addEventListener('DOMContentLoaded', () => {
       settingsBackdrop.classList.remove('active');
     });
   }
+
+  // Mute toggle
+  const muteBtn = document.getElementById('btn-mute');
+  if (muteBtn) {
+    muteBtn.addEventListener('click', toggleMute);
+  }
+  updateMuteButton();
 
   // Initial render
   timerRemaining = config.timerMinutes * 60;
