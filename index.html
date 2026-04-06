@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="src/style.css?v=MBM26">
+  <link rel="stylesheet" href="src/style.css?v=MBM16">
 </head>
 <body>
   <div class="container">
@@ -26,8 +26,13 @@
     <div class="card">
       <h2>Math Challenge</h2>
       <div id="math-problem"></div>
+      <div id="answer-area">
+        <input type="number" id="answer-input" placeholder="?" autocomplete="off" inputmode="numeric" aria-label="Your answer">
+        <button class="btn btn-primary" id="btn-submit-answer">Check ✓</button>
+      </div>
+      <div id="feedback-message" aria-live="polite"></div>
       <div class="btn-row">
-        <button class="btn btn-primary" id="btn-new-challenge">New Number</button>
+        <button class="btn btn-primary" id="btn-new-challenge">New Problem</button>
       </div>
     </div>
 
@@ -88,6 +93,6 @@
 
   <button class="btn-mute" id="btn-mute" aria-label="Mute sound" title="Mute sound">🔊</button>
 
-  <script src="src/app.js?v=MBM26"></script>
+  <script src="src/app.js?v=MBM16"></script>
 </body>
 </html>

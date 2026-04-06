@@ -8,6 +8,8 @@ export default [
         window: 'readonly',
         document: 'readonly',
         AudioContext: 'readonly',
+        webkitAudioContext: 'readonly',
+        localStorage: 'readonly',
         setInterval: 'readonly',
         clearInterval: 'readonly',
         setTimeout: 'readonly',

@@ -190,6 +190,60 @@ h1 {
   letter-spacing: 2px;
 }
 
+/* Answer input area */
+#answer-area {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin: 14px 0 6px;
+}
+
+#answer-input {
+  width: 120px;
+  padding: 10px 14px;
+  border: 3px solid #ddd;
+  border-radius: 14px;
+  font-size: 1.8rem;
+  font-family: inherit;
+  font-weight: bold;
+  text-align: center;
+  transition: border-color 0.2s;
+  -moz-appearance: textfield;
+}
+
+#answer-input::-webkit-outer-spin-button,
+#answer-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+#answer-input:focus {
+  outline: none;
+  border-color: #5c6bc0;
+}
+
+#answer-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Feedback message */
+#feedback-message {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  min-height: 1.8rem;
+  margin-bottom: 6px;
+}
+
+#feedback-message.feedback-correct {
+  color: #388e3c;
+}
+
+#feedback-message.feedback-wrong {
+  color: #d32f2f;
+}
+
 /* Timer */
 #timer-display {
   font-size: 6.5rem;
@@ -361,6 +415,7 @@ h1 {
   .card h2 { font-size: 1.2rem; margin-bottom: 12px; }
   #timer-display { font-size: 5rem; letter-spacing: 4px; padding: 8px 20px; }
   #math-problem { font-size: 2.6rem; }
+  #answer-input { width: 100px; font-size: 1.5rem; }
   .number-card { width: 80px; height: 80px; font-size: 2.8rem; border-radius: 14px; }
   #numbers-display { gap: 10px; }
   .btn { padding: 12px 22px; font-size: 0.95rem; min-height: 44px; touch-action: manipulation; }
@@ -405,6 +460,8 @@ h1 {
   .card h2 { font-size: 1.05rem; margin-bottom: 10px; padding-bottom: 8px; }
   #timer-display { font-size: 3.5rem; letter-spacing: 3px; padding: 6px 14px; border-radius: 14px; }
   #math-problem { font-size: 2rem; margin: 8px 0; }
+  #answer-input { width: 90px; font-size: 1.4rem; padding: 8px 10px; }
+  #feedback-message { font-size: 1.1rem; }
   .number-card { width: 60px; height: 60px; font-size: 2.2rem; border-radius: 12px; }
   #numbers-display { gap: 8px; margin-bottom: 12px; }
   .btn { padding: 10px 16px; font-size: 0.9rem; border-radius: 10px; }

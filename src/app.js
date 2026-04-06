@@ -47,12 +47,78 @@ function generateOperand() {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
+// Returns { text: "12 + 34", answer: 46 }
 function generateChallenge() {
-  return generateOperand();
+  const ops = [];
+  if (config.mathOps.add) ops.push('+');
+  if (config.mathOps.sub) ops.push('-');
+  if (config.mathOps.mul) ops.push('×');
+  if (ops.length === 0) ops.push('+');
+
+  const op = ops[Math.floor(Math.random() * ops.length)];
+  const a = generateOperand();
+  const b = generateOperand();
+
+  if (op === '+') {
+    return { text: `${a} + ${b}`, answer: a + b };
+  } else if (op === '-') {
+    // Keep answer non-negative for kids
+    const big = Math.max(a, b);
+    const small = Math.min(a, b);
+    return { text: `${big} \u2212 ${small}`, answer: big - small };
+  } else {
+    return { text: `${a} \u00d7 ${b}`, answer: a * b };
+  }
 }
 
-function renderChallenge(value) {
-  document.getElementById('math-problem').textContent = String(value);
+let currentChallengeAnswer = null;
+
+const CORRECT_MESSAGES = [
+  'Great job! \uD83C\uDF89',
+  'Awesome! \u2B50',
+  'You got it! \uD83C\uDF1F',
+  'Correct! \uD83C\uDFC6',
+  'Amazing! \uD83C\uDF8A',
+  'Brilliant! \uD83D\uDC4F',
+];
+
+function clearAnswerFeedback() {
+  const input = document.getElementById('answer-input');
+  const feedback = document.getElementById('feedback-message');
+  if (input) { input.value = ''; input.disabled = false; }
+  if (feedback) { feedback.textContent = ''; feedback.className = ''; }
+}
+
+function checkAnswer() {
+  const input = document.getElementById('answer-input');
+  const feedback = document.getElementById('feedback-message');
+  const val = input.value.trim();
+  if (val === '' || currentChallengeAnswer === null) return;
+
+  const userAnswer = parseInt(val, 10);
+  if (isNaN(userAnswer)) return;
+
+  input.disabled = true;
+  document.getElementById('btn-submit-answer').disabled = true;
+
+  if (userAnswer === currentChallengeAnswer) {
+    feedback.textContent = CORRECT_MESSAGES[Math.floor(Math.random() * CORRECT_MESSAGES.length)];
+    feedback.className = 'feedback-correct';
+  } else {
+    feedback.textContent = `Not quite \u2014 the answer is ${currentChallengeAnswer}`;
+    feedback.className = 'feedback-wrong';
+  }
+
+  setTimeout(() => {
+    readConfig();
+    spinChallengeOnly(generateChallenge());
+  }, 1500);
+}
+
+function renderChallenge(challenge) {
+  currentChallengeAnswer = challenge.answer;
+  document.getElementById('math-problem').textContent = `${challenge.text} = ?`;
+  clearAnswerFeedback();
 }
 
 // ── Sound / Mute ────────────────────────────────────────────────────────────
@@ -119,7 +185,7 @@ function playExpiry() {
       osc.start(t);
       osc.stop(t + 0.26);
     });
-  } catch (_) {
+  } catch (e) { // eslint-disable-line no-unused-vars
     // AudioContext unavailable — silent fallback
   }
 }
@@ -233,6 +299,11 @@ function setGameButtonsDisabled(disabled) {
   isSpinning = disabled;
   document.getElementById('btn-refresh').disabled = disabled;
   document.getElementById('btn-new-challenge').disabled = disabled;
+  const submitBtn = document.getElementById('btn-submit-answer');
+  if (submitBtn) submitBtn.disabled = disabled;
+  if (disabled) {
+    clearAnswerFeedback();
+  }
 }
 
 // Spin a single DOM element through random values then settle on finalValue.
@@ -301,14 +372,17 @@ function spinAndReveal(nums, challenge) {
     );
   });
 
-  // Challenge number lands ~100ms after the last card
+  // Challenge lands ~100ms after the last card
   const challengeDelay = (cards.length - 1) * CARD_STAGGER_MS + 100;
   spinElement(
     challengeEl,
     () => String(generateOperand()),
-    String(challenge),
+    `${challenge.text} = ?`,
     challengeDelay,
-    onOneDone
+    () => {
+      currentChallengeAnswer = challenge.answer;
+      onOneDone();
+    }
   );
 }
 
@@ -324,9 +398,12 @@ function spinChallengeOnly(challenge) {
   spinElement(
     challengeEl,
     () => String(generateOperand()),
-    String(challenge),
+    `${challenge.text} = ?`,
     0,
-    () => setGameButtonsDisabled(false)
+    () => {
+      currentChallengeAnswer = challenge.answer;
+      setGameButtonsDisabled(false);
+    }
   );
 }
 
@@ -348,6 +425,12 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-new-challenge').addEventListener('click', () => {
     readConfig();
     spinChallengeOnly(generateChallenge());
+  });
+
+  // Answer input
+  document.getElementById('btn-submit-answer').addEventListener('click', checkAnswer);
+  document.getElementById('answer-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') checkAnswer();
   });
 
   // Timer buttons
